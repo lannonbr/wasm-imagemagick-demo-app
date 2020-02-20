@@ -1,0 +1,12 @@
+{
+  "name": "wasm-imagemagick",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "mkdir dist && cp profile.jpg dist/ && parcel index.html"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ImageMagick in the Browser</title>
+  </head>
+  <body>
+    <div>
+      <p>
+        Rotation:
+        <input
+          type="range"
+          name="rotate"
+          id="rotate"
+          min="0"
+          max="360"
+          type="number"
+        />
+      </p>
+      <p>
+        Resize Percent:
+        <input type="number" name="resize" id="resize" />
+      </p>
+      <input id="rotateSubmit" type="submit" value="Submit" />
+    </div>
+    <img id="outImg" src="/profile.jpg" />
+    <script type="module">
+      import * as Magick from "https://knicknic.github.io/wasm-imagemagick/magickApi.js";
+
+      document.getElementById("rotateSubmit").onclick = () => {
+        let rotateVal = document.getElementById("rotate").value || 0;
+        let resizeVal = document.getElementById("resize").value || 0;
+        modifyImg({ deg: rotateVal, resize: resizeVal });
+      };
+
+      const modifyImg = async ({ deg, resize }) => {
+        const { outputFiles, exitCode } = await Magick.execute({
+          inputFiles: [
+            await Magick.buildInputFile("/profile.jpg", "profile.jpg")
+          ],
+          commands: [
+            `convert profile.jpg -rotate ${deg} -resize ${resize}% -swirl 40 image-out.jpg`
+          ]
+        });
+
+        const outImg = document.getElementById("outImg");
+        let blob = new Blob([outputFiles[0].buffer], { type: "image/jpeg" });
+        outImg.src = URL.createObjectURL(blob);
+      };
+    </script>
+  </body>
+</html>
